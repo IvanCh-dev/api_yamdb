@@ -23,9 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
+    'apiart.apps.ApiartConfig',
     'api.apps.ApiConfig',
     'rest_framework',
     'djoser',
+    'django_filters',
 
 ]
 
@@ -37,6 +39,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
 }
 
 
@@ -125,3 +129,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 AUTH_USER_MODEL = 'users.User'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
