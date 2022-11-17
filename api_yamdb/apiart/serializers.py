@@ -26,10 +26,12 @@ class TitleSerializer(serializers.ModelSerializer):
                                             queryset=Category.objects.all(),
                                             slug_field='slug'
                                             )
-    year = serializers.IntegerField(max_value=2020, min_value=1000)
+    year = serializers.IntegerField(min_value=1000, max_value=2022, required=True)
     class Meta:
-        fields = ('name', 'genre', 'category', 'description', 'year')
+        fields = ('id', 'name', 'genre', 'category', 'description', 'year')
         model = Title
+
+
     def validate_year(self, value):
         """Валидатор на указание произведения (год выпуска не может быть больше текущего)."""
         now = datetime.date.today().year

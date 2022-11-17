@@ -1,6 +1,6 @@
-from users.models import User
-from rest_framework import serializers
 from api.validators import UserDataValidation
+from rest_framework import serializers
+from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer, UserDataValidation):
