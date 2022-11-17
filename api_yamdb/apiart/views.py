@@ -1,14 +1,16 @@
-
 from apiart.filters import CustomTitleFilter
 from apiart.models import Category, Genre, Title
 #from apiart.permissions import OwnerOrReadOnly
 from apiart.serializers import (CategorySerializer, GenreSerializer,
-                                TitleSerializer)
+                                TitleSerializer, ReviewSerializer)
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, permissions, viewsets
 from rest_framework.pagination import PageNumberPagination
 
 from api.permissions import IsAdminOrReadOnly
+
+
 class CategoryViewSet(mixins.ListModelMixin,
                       mixins.CreateModelMixin,
                       mixins.DestroyModelMixin,
@@ -28,7 +30,7 @@ class CategoryViewSet(mixins.ListModelMixin,
     """Поиск по имени произведения"""
     search_fields = ('=name',)
 
-    
+
 class GenreViewSet(
                     mixins.CreateModelMixin,
                     mixins.DestroyModelMixin,
@@ -46,6 +48,7 @@ class GenreViewSet(
     lookup_field = 'slug'
     """Поиск по названию жанра"""
     search_fields = ('=name',)
+
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Представление апи через вьюсеты для работы с произведениями"""
@@ -67,3 +70,18 @@ class TitleViewSet(viewsets.ModelViewSet):
     filterest_class = CustomTitleFilter
     """настроена пагинации"""
     pagination_class = PageNumberPagination
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    # permission_classes = (OwnerOrReadOnly,)
+    pagination_class = PageNumberPagination
+
+    def get_queryset(self):
+        queryset = get_object_or_404(
+            Title, id=self.kwargs.get('title_id')).reviews.all()
+        return queryset
+
+    def perform_create(self, serializer):
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        serializer.save(author=self.request.user, title=title)

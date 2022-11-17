@@ -1,7 +1,8 @@
 import datetime
 
-from apiart.models import Category, Genre, Title
+from apiart.models import Category, Genre, Title, Review
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -39,3 +40,21 @@ class TitleSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Нельзя добавлять произведения, которые еще не вышли ')
         return value
     pass
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
+    )
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        model = Review
+
+    def validate(self, data):
+        if Review.objects.filter(
+            author=self.context['request'].user, title__id=self.context[
+                'request'].parser_context['kwargs']['title_id']).exists():
+            raise serializers.ValidationError(
+                'Вы уже оставляли отзыв на данное произведение.')
+        return data

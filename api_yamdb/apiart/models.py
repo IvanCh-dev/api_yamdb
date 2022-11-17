@@ -1,7 +1,9 @@
 from datetime import datetime
 
-from django.core.validators import MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from users.models import User
 
 
 class Category(models.Model):
@@ -59,8 +61,8 @@ class Title(models.Model):
 
     def __str__(self):
         return self.name
-    
-    
+
+
 class TitleGenre(models.Model):
     title = models.ForeignKey(
         Title,
@@ -76,4 +78,17 @@ class TitleGenre(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.genre}'
-    
+
+
+class Review(models.Model):
+    text = models.TextField()
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reviews')
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, related_name='reviews')
+    score = models.IntegerField(validators=[
+        MaxValueValidator(10),
+        MinValueValidator(1)
+    ])
+    pub_date = models.DateTimeField(
+        'Дата добавления', auto_now_add=True, db_index=True)
