@@ -7,7 +7,7 @@ from django.db import models
 class Category(models.Model):
     """Модель для работы с категориями произведений"""
     name = models.CharField(max_length=256, 
-                            verbose_name='Жанр'
+                            verbose_name='Категория'
                             )
     slug = models.SlugField(unique=True,
                             verbose_name='Адрес')
@@ -37,7 +37,7 @@ class Title(models.Model):
                                    verbose_name='Жанр произведения'
                                    )
     description = models.TextField(max_length=255,
-                                   verbose_name='Описание',
+                                   verbose_name='Описание произведения',
                                    null=True,
                                    blank=True)
     category = models.ForeignKey(
@@ -45,7 +45,7 @@ class Title(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='category',
-        verbose_name='Категория'
+        verbose_name='Название Категории'
     )
     year = models.PositiveIntegerField(
         validators=(MaxValueValidator(
