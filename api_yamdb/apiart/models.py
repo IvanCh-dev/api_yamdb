@@ -55,7 +55,8 @@ class Title(models.Model):
         validators=(MaxValueValidator(
                     datetime.now().year,
                     message=(
-                        'Нельзя добавлять произведения, которые еще не вышли'))
+                        'Нельзя добавлять произведения,которые еще не вышли')
+                    ),
                     ),
         verbose_name='Дата публикации',
     )
