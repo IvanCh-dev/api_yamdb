@@ -17,10 +17,10 @@ class User(AbstractUser):
         verbose_name='Логин',
     )
     email = models.EmailField(
-        blank=False,
-        max_length=254,
+        db_index=True,
         unique=True,
-        verbose_name='Почтовый адрес'
+        max_length=254,
+        verbose_name='Почтовый адрес',
     )
     first_name = models.CharField(
         max_length=150,
