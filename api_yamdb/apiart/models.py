@@ -8,25 +8,27 @@ from users.models import User
 
 class Category(models.Model):
     """Модель для работы с категориями произведений"""
-    name = models.CharField(max_length=256, 
-                            verbose_name='Жанр'
+    name = models.CharField(max_length=256,
+                            verbose_name='Категория'
                             )
     slug = models.SlugField(unique=True,
                             verbose_name='Адрес')
+
     def __str__(self):
         return self.name
 
 
 class Genre(models.Model):
     """Модель для работы с жанрами произведений"""
-    name = models.CharField(max_length=256, 
+    name = models.CharField(max_length=256,
                             verbose_name='Жанр'
                             )
     slug = models.SlugField(unique=True,
                             verbose_name='Адрес')
-    
+
     def __str__(self):
         return self.name
+
 
 class Title(models.Model):
     """Модель для работы с произведениями"""
@@ -39,7 +41,7 @@ class Title(models.Model):
                                    verbose_name='Жанр произведения'
                                    )
     description = models.TextField(max_length=255,
-                                   verbose_name='Описание',
+                                   verbose_name='Описание произведения',
                                    null=True,
                                    blank=True)
     category = models.ForeignKey(
@@ -47,15 +49,17 @@ class Title(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='category',
-        verbose_name='Категория'
+        verbose_name='Название Категории'
     )
     year = models.PositiveIntegerField(
         validators=(MaxValueValidator(
                     datetime.now().year,
-                    message=('Нельзя добавлять произведения, которые еще не вышли')), # валидатор что произведения не могут быть добавлены, если не вышли прозведения
+                    message=(
+                        'Нельзя добавлять произведения, которые еще не вышли'))
                     ),
         verbose_name='Дата публикации',
     )
+
     class Meta:
         ordering = ('name',)
 
