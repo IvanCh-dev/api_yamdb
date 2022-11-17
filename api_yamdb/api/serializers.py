@@ -1,17 +1,15 @@
-from users.models import User
 from rest_framework import serializers
-from api.validators import UserDataValidation
+
+from api.validators import ValidationUser
 
 
-class UserSerializer(serializers.ModelSerializer, UserDataValidation):
-    '''Сериализация данных .'''
-    class Meta:
-        model = User
-        fields = ('last_name', 'bio', 'role',
-                  'username', 'email', 'first_name')
-
-
-class SignupSerializer(serializers.Serializer, UserDataValidation):
-    '''Сериализация для auth/sighup.'''
+class SignupSerializer(serializers.Serializer, ValidationUser):
+    '''Сериализация auth/sighup.'''
     username = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=150)
+
+
+class GettingTokenSerializer(serializers.Serializer, ValidationUser):
+    '''Сериализация получения токена.'''
+    username = serializers.CharField(required=True, max_length=150)
+    confirmation_code = serializers.CharField(required=True)
