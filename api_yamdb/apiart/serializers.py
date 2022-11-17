@@ -1,6 +1,6 @@
 import datetime
 
-from apiart.models import Category, Genre, Title, Review
+from apiart.models import Category, Genre, Title, Review, Comment
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -58,3 +58,13 @@ class ReviewSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Вы уже оставляли отзыв на данное произведение.')
         return data
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True, slug_field='username'
+    )
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date')
+        model = Comment
