@@ -22,11 +22,12 @@ class TitleGetSerializer(serializers.ModelSerializer):
     """Сериализатор для get запроса  списка произведений."""
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(many=True, read_only=True)
+    rating = serializers.IntegerField()
 
     class Meta:
         model = Title
         fields = ('id', 'name', 'year',
-                  'description', 'genre', 'category')
+                  'description', 'genre', 'category', 'rating')
 
 
 class TitlePostSerializer(serializers.ModelSerializer):

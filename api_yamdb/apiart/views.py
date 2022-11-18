@@ -5,6 +5,7 @@ from apiart.serializers import (CategorySerializer, GenreSerializer,
                                 ReviewSerializer, CommentSerializer)
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
+from django.db.models import Avg
 from rest_framework import filters, viewsets
 from rest_framework.pagination import PageNumberPagination
 # from api.permissions import IsAdminOrReadOnly
@@ -48,7 +49,6 @@ class GenreViewSet(viewsets.ModelViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     """Представление апи через вьюсеты для работы с произведениями"""
-    queryset = Title.objects.all()
     """Права разрешения: если админ то есть все права, если не админ
     то только SAFE_METHODS доступ на прочтение.
     """
@@ -68,6 +68,10 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.action in ('list'):
             return TitleGetSerializer
         return TitlePostSerializer
+
+    def get_queryset(self):
+        queryset = Title.objects.annotate(rating=Avg('reviews__score'))
+        return queryset
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
