@@ -1,4 +1,6 @@
-from apiart.models import Category, Genre, Title
+from apiart.models import (Category, Comment,
+                           Genre, Review,
+                           Title, TitleGenre)
 from django.contrib import admin
 
 from .models import User
@@ -17,3 +19,6 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Genre)
 admin.site.register(Category)
 admin.site.register(Title)
+admin.site.register(Review)
+admin.site.register(Comment)
+admin.site.register(TitleGenre)
