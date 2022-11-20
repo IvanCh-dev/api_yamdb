@@ -1,9 +1,12 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from api.views import SignupUserAPIView, TokenAuthApiView
+from api.views import SignupUserAPIView, TokenAuthApiView, UserViewSet
+
+app_name = "api"
 
 router_v1 = routers.DefaultRouter()
+router_v1.register(r'users', UserViewSet, basename='users')
 
 auth_urls = [
     path(r'token/', TokenAuthApiView.as_view()),

@@ -2,14 +2,20 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, status, viewsets, filters
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
+from .permissions import IsAdmin
+from rest_framework.decorators import action
+from .serializers import (GettingTokenSerializer,
+                          SignupSerializer,
+                          UserSerializer)
 
 from users.models import User
 
-from .serializers import GettingTokenSerializer, SignupSerializer
+from .serializers import (GettingTokenSerializer,
+                          SignupSerializer)
 
 
 class SignupUserAPIView(generics.CreateAPIView):
@@ -35,6 +41,12 @@ class SignupUserAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+def get_token_for_user(user):
+    """Генерация токена для User."""
+    access = AccessToken.for_user(user)
+    return {'token': str(access), }
+
+
 class TokenAuthApiView(generics.CreateAPIView):
     """Получение токена """
     serializer_class = GettingTokenSerializer
@@ -48,6 +60,36 @@ class TokenAuthApiView(generics.CreateAPIView):
         )
         if default_token_generator.check_token(
                 user, serializer.validated_data['confirmation_code']):
-            token = AccessToken.for_user(user)
-            return Response({'token': str(token)}, status=status.HTTP_200_OK)
+            return Response(get_token_for_user(user))
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """Обработка запросов к:
+    "users/", "users/username/", "users/me/"."""
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (IsAdmin,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ("username",)
+    lookup_field = "username"
+
+    @action(
+        methods=["get", "patch"],
+        detail=False,
+        url_path="me",
+        permission_classes=(IsAuthenticated,),
+        serializer_class=UserSerializer,
+    )
+    def get_patch_me(self, request):
+        if request.method == 'GET':
+            serializer = self.get_serializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = self.get_serializer(
+            request.user,
+            data=request.data,
+            partial=True,
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(role=request.user.role, partial=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
