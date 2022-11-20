@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+ADMIN = 'admin'
 ROLES = [
     ('user', 'Пользователь'),
     ('moderator', 'Модератор'),
@@ -9,6 +10,9 @@ ROLES = [
 
 
 class User(AbstractUser):
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    USER = 'user'
 
     username = models.CharField(
         db_index=True,
@@ -52,3 +56,7 @@ class User(AbstractUser):
     def __str__(self):
         """Строковое представление модели."""
         return self.username
+
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN or self.is_superuser
