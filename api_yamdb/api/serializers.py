@@ -1,5 +1,6 @@
-from api.validators import ValidationUser
 from rest_framework import serializers
+
+from api.validators import ValidationUser
 from users.models import User
 
 

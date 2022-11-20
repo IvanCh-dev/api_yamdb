@@ -1,8 +1,9 @@
 import datetime
 
-from apiart.models import (Category, Comment,
-                            Genre, Review, Title)
 from rest_framework import serializers
+
+from apiart.models import (Category, Comment,
+                           Genre, Review, Title)
 
 
 class CategorySerializer(serializers.ModelSerializer):

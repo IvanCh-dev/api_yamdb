@@ -1,14 +1,16 @@
+from django.db.models import Avg
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import filters, mixins, viewsets
+from rest_framework.pagination import PageNumberPagination
+
 from api.permissions import IsAdminOrReadOnly, IsModeratorOrAdminOrAuthor
-from apiart.filters import CustomTitleFilter
+from apiart.filters_for_title import CustomTitleFilter
 from apiart.models import Category, Genre, Review, Title
 from apiart.serializers import (CategorySerializer, CommentSerializer,
                                 GenreSerializer, ReviewSerializer,
                                 TitleGetSerializer, TitlePostSerializer)
-from django.db.models import Avg
-from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, viewsets
-from rest_framework.pagination import PageNumberPagination
 
 
 class CategoryViewSet(mixins.ListModelMixin,

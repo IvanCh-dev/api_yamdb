@@ -1,8 +1,8 @@
+from django.contrib import admin
+
 from apiart.models import (Category, Comment,
                            Genre, Review,
                            Title, TitleGenre)
-from django.contrib import admin
-
 from .models import User
 
 
