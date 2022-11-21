@@ -7,7 +7,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from api.permissions import IsAdminOrReadOnly, IsModeratorOrAdminOrAuthor
 from apiart.filters_for_title import CustomTitleFilter
-from apiart.models import Category, Genre, Review, Title
+from reviews.models import Category, Genre, Review, Title
 from apiart.serializers import (CategorySerializer, CommentSerializer,
                                 GenreSerializer, ReviewSerializer,
                                 TitleGetSerializer, TitlePostSerializer)
@@ -56,27 +56,16 @@ class GenreViewSet(mixins.ListModelMixin,
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """Представление апи через вьюсеты для работы с произведениями"""
-    """Права разрешения: если админ то есть все права, если не админ
-    то только SAFE_METHODS доступ на прочтение.
-    """
+    queryset = Title.objects.all()
     permission_classes = (IsAdminOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
-    """
-    фильтрует по полю slug категории,
-    фильтрует по полю slug жанра,
-    фильтрует по названию произведения,
-    фильтрует по году
-    """
-    filterest_class = CustomTitleFilter
-    """настроена пагинации"""
+    filterset_class = CustomTitleFilter
     pagination_class = PageNumberPagination
-    filter_backends = (filters.SearchFilter,)
 
     def get_serializer_class(self):
-        if self.action in ('list'):
-            return TitleGetSerializer
-        return TitlePostSerializer
+        if self.request.method in ('POST', 'PATCH'):
+            return TitlePostSerializer
+        return TitleGetSerializer
 
     def get_queryset(self):
         queryset = Title.objects.annotate(rating=Avg('reviews__score'))
@@ -84,7 +73,12 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
+    """Представления Review  для получения и оставления отзыва"""
     serializer_class = ReviewSerializer
+    """Права доступа:
+    Автор отзыва, модератор или администратор -- для изменения отзыва,
+    Post - аунтифицированные пользователи
+    Для SAFE_METHODS все имеет доступ"""
     permission_classes = (IsModeratorOrAdminOrAuthor, )
     pagination_class = PageNumberPagination
 
@@ -99,7 +93,12 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """Представления Comment комментарии к отзывам"""
     serializer_class = CommentSerializer
+    """Права доступа:
+    Автор отзыва, модератор или администратор -- для изменения отзыва,
+    Post - аунтифицированные пользователи
+    Для SAFE_METHODS все имеет доступ"""
     permission_classes = (IsModeratorOrAdminOrAuthor, )
     pagination_class = PageNumberPagination
 

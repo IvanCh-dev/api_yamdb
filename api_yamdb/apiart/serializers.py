@@ -2,8 +2,7 @@ import datetime
 
 from rest_framework import serializers
 
-from apiart.models import (Category, Comment,
-                           Genre, Review, Title)
+from reviews.models import Category, Genre, Title, Review, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -74,13 +73,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
 
     def validate(self, data):
-        """Валидатор сначала передаём запрос далее , определяем тип запроса
-        и если запрос пост и юзер УЖЕ отправил отзыв, то рейзанётся ошибка
+        """
+        1. Поучаю запрос! Если запрос не типа POST то получаем данные
+        (можем изменить данные сделать другие запросы)
+        2. Получем из модели REview поля author(автор создания)
+        и title(само произведние) и если пользоатель ничего не создавал до, то
+        пусть создаст,
+        в ОБРАТНОМ случае у нас рейзанётся ошибка
+        так как отзыв должен быть 1 от одного юзера ==>
+        уникальная комбинация юзера/произведнеия
         """
         request = self.context['request']
+        if request.method != 'POST':
+            return data
         if Review.objects.filter(
             author=self.context['request'].user, title__id=self.context[
-                'request'].parser_context['kwargs']['title_id']).exists() and request.method == "POST":
+                'request'].parser_context['kwargs']['title_id']).exists():
             raise serializers.ValidationError(
                 'Вы уже оставляли отзыв на данное произведение.')
         return data
