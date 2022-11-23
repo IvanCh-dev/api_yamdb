@@ -2,7 +2,7 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import filters, mixins, viewsets
+from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
 from api.permissions import IsAdminOrReadOnly, IsModeratorOrAdminOrAuthor
@@ -27,7 +27,6 @@ class GenreViewSet(CreateListDestroy):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    """Произведения, к которым пишут отзывы"""
     permission_classes = (IsAdminOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = CustomTitleFilter

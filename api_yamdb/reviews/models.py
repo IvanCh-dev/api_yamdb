@@ -113,7 +113,16 @@ class Review(models.Model):
         'Дата добавления', auto_now_add=True, db_index=True)
 
     class Meta:
-        unique_together = ('author', 'title')
+        """Создана уникальность полей
+        произведения и человека который оставил отзыв на него"""
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'title'],
+                name='unique_author_title'
+            )
+        ]
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
 
 
 class Comment(models.Model):
@@ -124,3 +133,10 @@ class Comment(models.Model):
         Review, on_delete=models.CASCADE, related_name='comments')
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
+
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
+
+    def __str__(self):
+        return self.text
