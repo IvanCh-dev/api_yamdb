@@ -1,6 +1,5 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 
 from rest_framework import filters, generics, status, viewsets
@@ -10,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
 from users.models import User
-from .permissions import IsAdmin
-from .serializers import (GettingTokenSerializer, SignupSerializer,
-                          UserSerializer)
+from users.permissions import IsAdmin
+from users.serializers import (GettingTokenSerializer, SignupSerializer,
+                               UserSerializer)
 
 
 class SignupUserAPIView(generics.CreateAPIView):
@@ -23,12 +22,8 @@ class SignupUserAPIView(generics.CreateAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        try:
-            user, _ = User.objects.get_or_create(**serializer.validated_data)
-            confirmation_code = default_token_generator.make_token(user)
-        except IntegrityError:
-            msg = 'Пользователь с такими данными уже существует'
-            return Response(msg, status=status.HTTP_400_BAD_REQUEST)
+        user, _ = User.objects.get_or_create(**serializer.validated_data)
+        confirmation_code = default_token_generator.make_token(user)
         send_mail(
             subject='Confirmation code',
             message=f'Your confirmation code {confirmation_code}',
@@ -36,12 +31,6 @@ class SignupUserAPIView(generics.CreateAPIView):
             recipient_list=[user.email],
             fail_silently=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-def get_token_for_user(user):
-    """Генерация токена для User."""
-    access = AccessToken.for_user(user)
-    return {'token': str(access), }
 
 
 class TokenAuthApiView(generics.CreateAPIView):
@@ -57,7 +46,7 @@ class TokenAuthApiView(generics.CreateAPIView):
         )
         if default_token_generator.check_token(
                 user, serializer.validated_data['confirmation_code']):
-            return Response(get_token_for_user(user))
+            return Response(AccessToken.for_user(user))
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -76,9 +65,8 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False,
         url_path="me",
         permission_classes=(IsAuthenticated,),
-        serializer_class=UserSerializer,
     )
-    def get_patch_me(self, request):
+    def get_me(self, request):
         if request.method == 'GET':
             serializer = self.get_serializer(request.user)
             return Response(serializer.data, status=status.HTTP_200_OK)
