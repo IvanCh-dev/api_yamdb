@@ -2,14 +2,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 ADMIN = 'admin'
-ROLES = [
-    ('user', 'Пользователь'),
-    ('moderator', 'Модератор'),
-    ('admin', 'Администратор'),
-]
 
 
 class User(AbstractUser):
+    ROLES = [
+        ('user', 'USER'),
+        ('moderator', 'MODERATOR'),
+        ('admin', 'ADMIN'),
+    ]
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     USER = 'user'
@@ -60,3 +60,11 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         return self.role == self.ADMIN or self.is_superuser
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
+
+    @property
+    def is_user(self):
+        return self.role == self.USER
