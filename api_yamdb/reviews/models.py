@@ -14,6 +14,10 @@ class Category(models.Model):
     slug = models.SlugField(unique=True,
                             verbose_name='Адрес')
 
+    class Meta:
+        verbose_name = "Катеогория произведения"
+        verbose_name_plural = "Катеогории произведений"
+
     def __str__(self):
         return self.name
 
@@ -25,6 +29,10 @@ class Genre(models.Model):
                             )
     slug = models.SlugField(unique=True,
                             verbose_name='Адрес')
+
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
 
     def __str__(self):
         return self.name
@@ -63,6 +71,8 @@ class Title(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = "Произведение"
+        verbose_name_plural = "Произведения"
 
     def __str__(self):
         return self.name
@@ -80,6 +90,10 @@ class TitleGenre(models.Model):
         null=True,
         related_name='genretitles',
     )
+
+    class Meta:
+        verbose_name = "Жанр произведения"
+        verbose_name_plural = "Жанры произведения"
 
     def __str__(self):
         return f'{self.title} произведение имеет жанр: {self.genre}'
@@ -99,8 +113,6 @@ class Review(models.Model):
         'Дата добавления', auto_now_add=True, db_index=True)
 
     class Meta:
-        """Создана уникальность полей
-        произведения и человека который оставил отзыв на него"""
         unique_together = ('author', 'title')
 
 

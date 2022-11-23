@@ -27,8 +27,7 @@ class TitleGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year',
-                  'description', 'genre', 'category', 'rating')
+        fields = '__all__'
 
 
 class TitlePostSerializer(serializers.ModelSerializer):
