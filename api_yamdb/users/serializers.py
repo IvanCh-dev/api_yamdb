@@ -1,11 +1,31 @@
 from rest_framework import serializers
+from django.core.exceptions import ValidationError
 
-from api.validators import ValidationUser
 from users.models import User
 
 
+class ValidationUser:
+    """Validation username."""
+
+    def validate_username(self, value):
+        if value == '':
+            raise ValidationError('поле username не заполненно')
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('username занято')
+        elif value == 'me':
+            raise ValidationError('me недопустимо в username')
+        return value
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                'email занят'
+            )
+        return value
+
+
 class SignupSerializer(serializers.Serializer, ValidationUser):
-    '''Сериализация auth/sighup.'''
+    '''Сериализация auth/signup.'''
     username = serializers.CharField(required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=150)
 

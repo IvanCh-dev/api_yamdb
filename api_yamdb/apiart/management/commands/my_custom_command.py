@@ -2,8 +2,7 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-
-from apiart.models import Category, Genre
+from reviews.models import Category, Genre
 
 
 CSV_FILES = {
