@@ -1,6 +1,7 @@
 import datetime
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from reviews.models import Category, Comment, Genre, Review, Title
 
@@ -62,14 +63,37 @@ class TitlePostSerializer(serializers.ModelSerializer):
         return value
 
 
+class UniqueTitle:
+    requires_context = True
+
+    def __init__(self, context_key):
+        self.key = context_key
+
+    def __call__(self, serializer_field):
+        return serializer_field.context.get('view').kwargs.get(self.key)
+
+    def __repr__(self):
+        return '%s()' % self.__class__.__name__
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
-        read_only=True, slug_field='username'
-    )
+        slug_field='username',
+        default=serializers.CurrentUserDefault(),
+        read_only=True)
+    title = serializers.HiddenField(
+        default=UniqueTitle('title_id'))
 
     class Meta:
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
+        fields = ('id', 'text', 'author', 'score', 'pub_date', 'title')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Review.objects.all(),
+                fields=['title', 'author']
+            )
+        ]
+
 
     def validate(self, data):
         """
