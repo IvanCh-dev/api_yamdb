@@ -105,6 +105,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         так как отзыв должен быть 1 от одного юзера ==>
         уникальная комбинация юзера/произведнеия
         """
+
+    def validate(self, data): 
         request = self.context['request']
         if request.method != 'POST':
             return data
