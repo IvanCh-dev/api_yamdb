@@ -95,18 +95,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
-        """
-        1. Поучаю запрос! Если запрос не типа POST то получаем данные
-        (можем изменить данные сделать другие запросы)
-        2. Получем из модели REview поля author(автор создания)
-        и title(само произведние) и если пользоатель ничего не создавал до, то
-        пусть создаст,
-        в ОБРАТНОМ случае у нас рейзанётся ошибка
-        так как отзыв должен быть 1 от одного юзера ==>
-        уникальная комбинация юзера/произведнеия
-        """
-
-    def validate(self, data):
         request = self.context['request']
         if request.method != 'POST':
             return data
