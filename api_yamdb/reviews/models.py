@@ -61,9 +61,9 @@ class Title(models.Model):
     )
     year = models.PositiveIntegerField(
         validators=(MaxValueValidator(
-                    datetime.now().year,
+                    datetime.now().year and MinValueValidator(1000),
                     message=(
-                        'Нельзя добавлять произведения,которые еще не вышли')
+                        'Нельзя добавлять произведения,которые еще не вышли'),
                     ),
                     ),
         verbose_name='Дата публикации',
