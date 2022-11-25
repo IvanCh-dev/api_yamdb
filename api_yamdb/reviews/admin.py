@@ -18,9 +18,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     search_fields = ('name__startswith', )
     empty_value_display = ('-пусто-')
-
-    class Meta:
-        ordering = ('name', 'slug')
+    ordering = ('name', 'slug')
 
 
 class TitleAdmin(admin.ModelAdmin):
