@@ -2,7 +2,7 @@ import datetime
 
 from rest_framework import serializers
 
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -42,7 +42,7 @@ class TitlePostSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(queryset=Category.objects.all(),
                                             slug_field='slug'
                                             )
-    year = serializers.IntegerField(max_value=2022, min_value=1000)
+    year = serializers.IntegerField()
 
     class Meta:
         fields = ('name', 'genre', 'category', 'description', 'year')
