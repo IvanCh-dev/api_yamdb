@@ -2,8 +2,8 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from apiart.views import (CategoryViewSet, GenreViewSet,
-                          TitleViewSet, ReviewViewSet, CommentViewSet)
+from apiart.views import (CategoryViewSet, CommentViewSet, GenreViewSet,
+                          ReviewViewSet, TitleViewSet)
 
 
 v1_router = DefaultRouter()

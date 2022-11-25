@@ -33,7 +33,7 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
-И  теперь наслаждайтесь нашей работой с командой!
+И  теперь наслаждайтесь нашей работой с командой))
 
 ### Авторы
 https://github.com/Vihapp
