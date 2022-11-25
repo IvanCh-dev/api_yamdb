@@ -8,48 +8,62 @@ class GenreInline(admin.TabularInline):
 
 
 class GenreAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug")
-    search_fields = ("name__startswith", )
+    list_display = ('name', 'slug')
+    search_fields = ('name__startswith', )
     empty_value_display = ('-пусто-')
 
     class Meta:
-        ordering = ("name", "slug")
+        ordering = ('name', 'slug')
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "slug")
-    search_fields = ("name__startswith", )
+    list_display = ('name', 'slug')
+    search_fields = ('name__startswith', )
     empty_value_display = ('-пусто-')
 
     class Meta:
-        ordering = ("name", "slug")
+        ordering = ('name', 'slug')
 
 
 class TitleAdmin(admin.ModelAdmin):
-    list_display = ("name", "description", "category", "year")
-    search_fields = ("name__startswith", "gerne", "category", "year")
+    list_display = ('name', 'description', 'category', 'year')
+    search_fields = ('name__startswith', 'gerne', 'category', 'year')
     empty_value_display = ('-пусто-')
-    exclude = ("genre", )
+    exclude = ('genre', )
     inlines = (
         GenreInline,
     )
 
     class Meta:
-        ordering = ("name", "genre", "category")
+        ordering = ('name', 'genre', 'category')
 
 
-class TtileGenreAdmin(admin.ModelAdmin):
-    list_display = ("title", "genre")
-    search_fields = ("title__startswith", "genre__startswith",)
+class TitleGenreAdmin(admin.ModelAdmin):
+    list_display = ('title', 'genre')
+    search_fields = ('title__startswith', 'genre__startswith',)
     empty_value_display = ('-пусто-')
 
     class Meta:
-        ordering = ("title", "genre")
+        ordering = ('title', 'genre')
+
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('text', 'author', 'title', 'score', 'pub_date')
+    search_fields = ('text__startswith',)
+    empty_value_display = ('-пусто-')
+    ordering = ('title', '-pub_date')
+
+
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('text', 'author', 'review', 'pub_date')
+    search_fields = ('text__startswith',)
+    empty_value_display = ('-пусто-')
+    ordering = ('review', '-pub_date')
 
 
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Title, TitleAdmin)
-admin.site.register(TitleGenre, TtileGenreAdmin)
-admin.site.register(Review)
-admin.site.register(Comment)
+admin.site.register(TitleGenre, TitleGenreAdmin)
+admin.site.register(Review, ReviewAdmin)
+admin.site.register(Comment, CommentAdmin)
