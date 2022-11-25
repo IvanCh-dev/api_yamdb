@@ -106,7 +106,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         уникальная комбинация юзера/произведнеия
         """
 
-    def validate(self, data): 
+    def validate(self, data):
         request = self.context['request']
         if request.method != 'POST':
             return data
