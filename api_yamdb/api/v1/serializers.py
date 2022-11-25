@@ -94,7 +94,6 @@ class ReviewSerializer(serializers.ModelSerializer):
             )
         ]
 
-
     def validate(self, data):
         """
         1. Поучаю запрос! Если запрос не типа POST то получаем данные
