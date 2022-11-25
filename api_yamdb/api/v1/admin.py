@@ -11,18 +11,14 @@ class GenreAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     search_fields = ('name__startswith', )
     empty_value_display = ('-пусто-')
-
-    class Meta:
-        ordering = ('name', 'slug')
+    ordering = ('name', 'slug')
 
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug')
     search_fields = ('name__startswith', )
     empty_value_display = ('-пусто-')
-
-    class Meta:
-        ordering = ('name', 'slug')
+    ordering = ('name', 'slug')
 
 
 class TitleAdmin(admin.ModelAdmin):
@@ -42,9 +38,7 @@ class TitleGenreAdmin(admin.ModelAdmin):
     list_display = ('title', 'genre')
     search_fields = ('title__startswith', 'genre__startswith',)
     empty_value_display = ('-пусто-')
-
-    class Meta:
-        ordering = ('title', 'genre')
+    ordering = ('title', 'genre')
 
 
 class ReviewAdmin(admin.ModelAdmin):

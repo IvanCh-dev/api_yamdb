@@ -5,13 +5,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
-from api.permissions import IsAdminOrReadOnly, IsModeratorOrAdminOrAuthor
-from apiart.filters_for_title import CustomTitleFilter
-from reviews.models import Category, Genre, Review, Title
-from apiart.serializers import (CategorySerializer, CommentSerializer,
+from api.v1.permissions import IsAdminOrReadOnly, IsModeratorOrAdminOrAuthor
+from api.v1.filters_for_title import CustomTitleFilter
+from api.v1.serializers import (CategorySerializer, CommentSerializer,
                                 GenreSerializer, ReviewSerializer,
                                 TitleGetSerializer, TitlePostSerializer)
-from apiart.mixins import CreateListDestroy
+from api.v1.mixins import CreateListDestroy
+from reviews.models import Category, Genre, Review, Title
 
 
 class CategoryViewSet(CreateListDestroy):
