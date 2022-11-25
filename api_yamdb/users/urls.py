@@ -4,7 +4,7 @@ from rest_framework import routers
 
 from users.views import SignupUserAPIView, TokenAuthApiView, UserViewSet
 
-app_name = "api"
+app_name = "users"
 
 router_v1 = routers.DefaultRouter()
 router_v1.register(r'users', UserViewSet, basename='users')
