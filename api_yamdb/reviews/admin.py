@@ -29,7 +29,9 @@ class TitleAdmin(admin.ModelAdmin):
     inlines = (
         GenreInline,
     )
-    ordering = ('name', 'genre', 'category')
+
+    class Meta:
+        ordering = ('name', 'genre', 'category')
 
 
 class TitleGenreAdmin(admin.ModelAdmin):
